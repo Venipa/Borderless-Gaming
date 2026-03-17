@@ -25,7 +25,7 @@ jobs:
           $version = $version.Replace("refs/tags/", "")
           Write-Host "Version: $version"
           $xmlPath = "version.xml"
-          $appPath = "BorderlessGaming.csproj"
+          $appPath = "BorderlessGaming\BorderlessGaming.csproj"
           (Get-Content -LiteralPath $xmlPath) -replace "<version>.*?</version>", "<version>$version</version>" | Set-Content -LiteralPath $xmlPath
           (Get-Content -LiteralPath $appPath) -replace "<ApplicationVersion>.*?</ApplicationVersion>", "<ApplicationVersion>$version</ApplicationVersion>" | Set-Content -LiteralPath $appPath
           echo "APP_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
