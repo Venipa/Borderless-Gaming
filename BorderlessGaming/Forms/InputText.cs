@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlueMystic;
+using System;
 using System.Windows.Forms;
 
 namespace BorderlessGaming.Forms
@@ -8,6 +9,7 @@ namespace BorderlessGaming.Forms
         public InputText()
         {
             InitializeComponent();
+            _ = new DarkModeCS(this);
         }
 
         public string Title
@@ -31,6 +33,11 @@ namespace BorderlessGaming.Forms
         private void frmInputText_Shown(object sender, EventArgs e)
         {
             txtInput.Focus();
+        }
+
+        private void InputText_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

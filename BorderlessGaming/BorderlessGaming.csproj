@@ -74,6 +74,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DarkModeForms\DarkModeCS.cs" />
+    <Compile Include="DarkModeForms\FlatComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkModeForms\FlatTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkModeForms\Messenger.cs" />
     <Compile Include="Forms\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>

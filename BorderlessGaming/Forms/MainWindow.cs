@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BlueMystic;
 using BorderlessGaming.Logic.Core;
 using BorderlessGaming.Logic.Extensions;
 using BorderlessGaming.Logic.Models;
@@ -21,6 +22,7 @@ namespace BorderlessGaming.Forms
         {
             _watcher = new ProcessWatcher(this);
             InitializeComponent();
+            _ = new DarkModeCS(this);
             LanguageManager.Setup(toolStripLanguages);
         }
 
@@ -922,6 +924,12 @@ fav.PositionX.ToString()), out int favPositionX);
             }
         }
 
+        private void ToolStripDisableSteamIntegrationCheckChanged(object sender, EventArgs e)
+        {
+            Config.Instance.AppSettings.DisableSteamIntegration = _toolStripDisableSteamIntegration.Checked;
+            Config.Save();
+        }
+
         private void MainWindow_Shown(object sender, EventArgs e)
         {
             // hide the window if desired (this doesn't work well in Load)
@@ -1202,7 +1210,6 @@ fav.PositionX.ToString()), out int favPositionX);
 
         private void checkOutRainwayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Tools.GotoSite("https://rainway.io/?ref=borderlessgaming3");
         }
     }
 }

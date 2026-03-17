@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows.Forms;
+using BlueMystic;
 using BorderlessGaming.Logic.System;
 
 namespace BorderlessGaming.Forms
@@ -10,6 +11,7 @@ namespace BorderlessGaming.Forms
         public AboutForm()
         {
             InitializeComponent();
+            _ = new DarkModeCS(this);
         }
 
         private void AboutFormLoad(object sender, EventArgs e)

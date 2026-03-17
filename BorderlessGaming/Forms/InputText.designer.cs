@@ -73,6 +73,7 @@
             this.MinimizeBox = false;
             this.Name = "InputText";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
+            this.Load += new System.EventHandler(this.InputText_Load);
             this.Shown += new System.EventHandler(this.frmInputText_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();

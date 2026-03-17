@@ -1,8 +1,6 @@
-<a href="https://store.steampowered.com/app/388080/Borderless_Gaming/?utm_source=github&amp;utm_campaign=f2p" target="_blank">
-  <div style="width: 600px; border: 1px solid #ccc; border-radius: 4px; overflow: hidden;">
-    <img src="https://production.worker-lingering-dust-86c7.andrew-03e.workers.dev" style="width: 100%; height: 500px;"></img>
-  </div>
-</a>
+# Borderless Gaming - Decluttered
+
+A utility software like this shouldn't be paid, and shouldn't have paywalled features. It's a software that changes window styles, do we really need to paywall that and add adware popups? The answer is no!
 
 
 # What is this?
