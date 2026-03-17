@@ -38,9 +38,9 @@ AppVerName=Borderless Gaming v{#AppVersion}
 ; Shown only in Programs & Features
 AppContact=Borderless Gaming on Github
 AppComments=Play your favorite games in a borderless window; no more time-consuming Alt-Tabs!
-AppPublisherURL=https://github.com/Codeusa/Borderless-Gaming
-AppSupportURL=https://github.com/Codeusa/Borderless-Gaming/issues
-AppUpdatesURL=https://github.com/Codeusa/Borderless-Gaming/releases/latest
+AppPublisherURL=https://github.com/Venipa/Borderless-Gaming
+AppSupportURL=https://github.com/Venipa/Borderless-Gaming/issues
+AppUpdatesURL=https://github.com/Venipa/Borderless-Gaming/releases/latest
 UninstallDisplayName=Borderless Gaming
 ; 691 KB as initial install
 UninstallDisplaySize=929008

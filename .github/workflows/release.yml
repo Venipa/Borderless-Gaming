@@ -3,7 +3,7 @@ name: Build and Release Borderless Gaming
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*.*'
   workflow_dispatch:
 
 jobs:
@@ -17,6 +17,19 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3
 
+      - name: Set version
+        shell: powershell
+        run: |
+          $version = $Env:GITHUB_REF_NAME
+          $version = $version.Replace("v", "")
+          $version = $version.Replace("refs/tags/", "")
+          Write-Host "Version: $version"
+          $xmlPath = "version.xml"
+          $appPath = "BorderlessGaming.csproj"
+          (Get-Content -LiteralPath $xmlPath) -replace "<version>.*?</version>", "<version>$version</version>" | Set-Content -LiteralPath $xmlPath
+          (Get-Content -LiteralPath $appPath) -replace "<ApplicationVersion>.*?</ApplicationVersion>", "<ApplicationVersion>$version</ApplicationVersion>" | Set-Content -LiteralPath $appPath
+          echo "APP_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Restore NuGet packages
         run: msbuild BorderlessGaming.sln /t:Restore
 
@@ -26,15 +39,19 @@ jobs:
               /p:Platform="Any CPU" `
               /p:PostBuildEvent="" `
               /p:RunPostBuildEvent=Never
+
       - name: Prepare release folder
         run: |
+            $version = $Env:APP_VERSION
             mkdir release
             xcopy BorderlessGaming\bin\Release\* release\ /E /H /C /I
             powershell Compress-Archive -Path "Languages\*.lang" -DestinationPath "release\Languages.zip" -Force
-            powershell Compress-Archive -Path release\* -DestinationPath BorderlessGaming.zip -Force
+            powershell Compress-Archive -Path release\* -DestinationPath BorderlessGaming-$version.zip -Force
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: BorderlessGaming.zip
+          files: |
+            BorderlessGaming-${{ env.APP_VERSION }}.zip
+            Languages.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

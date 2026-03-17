@@ -184,7 +184,7 @@ namespace BorderlessGaming.Forms
 
         private void toolStripReportBug_Click(object sender, EventArgs e)
         {
-            Tools.GotoSite("https://github.com/Codeusa/Borderless-Gaming/issues");
+            Tools.GotoSite("https://github.com/Venipa/Borderless-Gaming/issues");
         }
 
         private void toolStripSupportUs_Click(object sender, EventArgs e)

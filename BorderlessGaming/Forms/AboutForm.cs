@@ -45,7 +45,7 @@ namespace BorderlessGaming.Forms
 
         private void OpenGithubRepo(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Tools.GotoSite("https://github.com/Codeusa/Borderless-Gaming");
+            Tools.GotoSite("https://github.com/Venipa/Borderless-Gaming");
         }
 
         #endregion
