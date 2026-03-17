@@ -50,7 +50,7 @@ jobs:
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: Installers\BorderlessGaming_Standalone_Admin.iss
-          options: /O"setup" /F"BorderlessGaming_${{ env.APP_VERSION }}-setup.exe"
+          options: /O"setup" /F"BorderlessGaming_${{ env.APP_VERSION }}-setup"
  
       - name: Prepare release folder
         run: |
@@ -64,6 +64,7 @@ jobs:
         with:
           name: Borderless Gaming ${{ env.APP_VERSION }}
           draft: true
+          overwrite: true
           files: |
             BorderlessGaming-${{ env.APP_VERSION }}.zip
             setup\BorderlessGaming_${{ env.APP_VERSION }}-setup.exe
