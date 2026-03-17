@@ -26,8 +26,11 @@ jobs:
           Write-Host "Version: $version"
           $xmlPath = "version.xml"
           $appPath = "BorderlessGaming\BorderlessGaming.csproj"
+          $assemblyInfoPath = "BorderlessGaming\Properties\AssemblyInfo.cs"
           (Get-Content -LiteralPath $xmlPath) -replace "<version>.*?</version>", "<version>$version</version>" | Set-Content -LiteralPath $xmlPath
           (Get-Content -LiteralPath $appPath) -replace "<ApplicationVersion>.*?</ApplicationVersion>", "<ApplicationVersion>$version</ApplicationVersion>" | Set-Content -LiteralPath $appPath
+          (Get-Content -LiteralPath $assemblyInfoPath) -replace "\[assembly: AssemblyVersion\(&quot;.*?&quot;\)\]", "[assembly: AssemblyVersion(&quot;$version&quot;)]" | Set-Content -LiteralPath $assemblyInfoPath
+          (Get-Content -LiteralPath $assemblyInfoPath) -replace "\[assembly: AssemblyFileVersion\(&quot;.*?&quot;\)\]", "[assembly: AssemblyFileVersion(&quot;$version&quot;)]" | Set-Content -LiteralPath $assemblyInfoPath
           echo "APP_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Restore NuGet packages
@@ -52,6 +55,7 @@ jobs:
         with:
           files: |
             BorderlessGaming-${{ env.APP_VERSION }}.zip
-            Languages.zip
+            version.xml
+            release\Languages.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
