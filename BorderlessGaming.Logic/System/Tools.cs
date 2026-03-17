@@ -24,10 +24,12 @@ namespace BorderlessGaming.Logic.System
       {
         Directory.CreateDirectory(AppEnvironment.DataPath);
       }
+
       if (!Debugger.IsAttached)
       {
         ExceptionHandler.AddGlobalHandlers();
       }
+
       Config.Load();
       LanguageManager.Load();
     }
@@ -95,21 +97,20 @@ namespace BorderlessGaming.Logic.System
         var content = await response.Content.ReadAsStringAsync();
         var release = JsonConvert.DeserializeObject<dynamic>(content);
         var latestVersion = new Version(release.tag_name.Replace("v", ""));
-        var appVersion = Assembly.GetEntryAssembly().GetName().Version;
+        var appVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version(0, 0, 0, 0);
         if (appVersion.CompareTo(latestVersion) < 0)
         {
           if (MessageBox.Show(Resources.InfoUpdateAvailable, Resources.InfoUpdatesHeader,
-                  MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
           {
             GotoSite(releasePageUrl);
           }
         }
       }
-      catch
+      catch (Exception)
       {
         MessageBox.Show(Resources.ErrorUpdates, Resources.ErrorHeader, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
-
   }
 }
