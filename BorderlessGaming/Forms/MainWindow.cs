@@ -50,7 +50,7 @@ namespace BorderlessGaming.Forms
 
     private void CheckForUpdates()
     {
-      Tools.CheckForUpdates().Start();
+      this.Invoke(new Action(() => Tools.CheckForUpdates()));
     }
 
     #region Local data
@@ -909,10 +909,6 @@ namespace BorderlessGaming.Forms
         WindowState = FormWindowState.Normal;
       }
 
-      if (Config.Instance.AppSettings.CheckForUpdates)
-      {
-        CheckForUpdates();
-      }
     }
 
     private void MainWindow_Shown(object sender, EventArgs e)

@@ -12,7 +12,9 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using BorderlessGaming.Logic.Properties;
 using System.Net.Http;
+using System.ServiceModel;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace BorderlessGaming.Logic.System
 {
@@ -92,11 +94,17 @@ namespace BorderlessGaming.Logic.System
       {
         var releasePageUrl = "https://github.com/Venipa/Borderless-Gaming/releases/latest";
         const string apiUrl = "https://api.github.com/repos/Venipa/Borderless-Gaming/releases/latest";
-        var response = await new HttpClient().GetAsync(apiUrl);
+        var http = new HttpClient();
+        http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+        http.DefaultRequestHeaders.Add("Accept", "application/json");
+        http.DefaultRequestHeaders.Add("Accept-Language", "en-US");
+        http.DefaultRequestHeaders.Add("Referer", "https://github.com/");
+        http.DefaultRequestHeaders.Add("Origin", "https://github.com/");
+        var response = await http.GetAsync(apiUrl);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
-        var release = JsonConvert.DeserializeObject<dynamic>(content);
-        var latestVersion = new Version(release.tag_name.Replace("v", ""));
+        JObject release = JsonConvert.DeserializeObject<JObject>(content);
+        var latestVersion = new Version(release.Value<string>("tag_name").Replace("v", ""));
         var appVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version(0, 0, 0, 0);
         if (appVersion.CompareTo(latestVersion) < 0)
         {
@@ -106,6 +114,7 @@ namespace BorderlessGaming.Logic.System
             GotoSite(releasePageUrl);
           }
         }
+
       }
       catch (Exception)
       {
