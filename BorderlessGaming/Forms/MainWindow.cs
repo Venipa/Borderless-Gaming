@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BlueMystic;
@@ -922,6 +923,8 @@ fav.PositionX.ToString()), out int favPositionX);
             {
                 WindowState = FormWindowState.Normal;
             }
+
+            this.BeginInvoke(new Action(() => { Tools.CheckForUpdates().GetAwaiter().GetResult(); }));
         }
 
         private void MainWindow_Shown(object sender, EventArgs e)
