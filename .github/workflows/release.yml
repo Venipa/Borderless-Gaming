@@ -46,7 +46,12 @@ jobs:
               /p:Platform="Any CPU" `
               /p:PostBuildEvent="" `
               /p:RunPostBuildEvent=Never
-
+      - name: Create setup (Inno Setup)
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: Installers\BorderlessGaming_Standalone_Admin.iss
+          options: /O"setup" /F"BorderlessGaming_${{ env.APP_VERSION }}-setup.exe"
+ 
       - name: Prepare release folder
         run: |
             $version = $Env:APP_VERSION
@@ -61,6 +66,7 @@ jobs:
           draft: true
           files: |
             BorderlessGaming-${{ env.APP_VERSION }}.zip
+            setup\BorderlessGaming_${{ env.APP_VERSION }}-setup.exe
             version.xml
             release\Languages.zip
         env:
