@@ -924,12 +924,6 @@ fav.PositionX.ToString()), out int favPositionX);
             }
         }
 
-        private void ToolStripDisableSteamIntegrationCheckChanged(object sender, EventArgs e)
-        {
-            Config.Instance.AppSettings.DisableSteamIntegration = _toolStripDisableSteamIntegration.Checked;
-            Config.Save();
-        }
-
         private void MainWindow_Shown(object sender, EventArgs e)
         {
             // hide the window if desired (this doesn't work well in Load)
