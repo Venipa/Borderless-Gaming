@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -1027,6 +1027,7 @@ namespace BorderlessGaming.Forms
 
     private bool _closingFromExitMenu;
     private readonly ProcessWatcher _watcher;
+    private int _isProcessingMakeBorderlessHotkey;
 
     private void exitToolStripMenuItem_Click(object sender, EventArgs e)
     {
@@ -1109,28 +1110,7 @@ namespace BorderlessGaming.Forms
           // Only if that window isn't Borderless Windows itself
           if (hCurrentActiveWindow != Handle)
           {
-            // Figure out the process details based on the current window handle
-            var pd = _watcher.FromHandle(hCurrentActiveWindow);
-            if (pd == null)
-            {
-              Task.WaitAll(_watcher.Refresh());
-              pd = _watcher.FromHandle(hCurrentActiveWindow);
-              if (pd == null)
-              {
-                return;
-              }
-            }
-
-            // If we have information about this process -and- we've already made it borderless, then reverse the process
-            if (pd.MadeBorderless)
-            {
-              Manipulation.RestoreWindow(pd);
-            }
-            // Otherwise, this is a fresh request to remove the border from the current window
-            else
-            {
-              _watcher.RemoveBorder(pd).GetAwaiter().GetResult();
-            }
+            _ = HandleMakeBorderlessHotKeyAsync(hCurrentActiveWindow);
           }
 
           return; // handled the message, do not call base WndProc for this message
@@ -1164,6 +1144,47 @@ namespace BorderlessGaming.Forms
       }
 
       base.WndProc(ref m);
+    }
+
+    private async Task HandleMakeBorderlessHotKeyAsync(IntPtr hCurrentActiveWindow)
+    {
+      if (Interlocked.Exchange(ref _isProcessingMakeBorderlessHotkey, 1) == 1)
+      {
+        return;
+      }
+
+      try
+      {
+        // Figure out the process details based on the current window handle
+        var pd = _watcher.FromHandle(hCurrentActiveWindow);
+        if (pd == null)
+        {
+          await _watcher.Refresh();
+          pd = _watcher.FromHandle(hCurrentActiveWindow);
+          if (pd == null)
+          {
+            return;
+          }
+        }
+
+        // If we have information about this process -and- we've already made it borderless, then reverse the process
+        if (pd.MadeBorderless)
+        {
+          Manipulation.RestoreWindow(pd);
+          return;
+        }
+
+        // Otherwise, this is a fresh request to remove the border from the current window
+        await _watcher.RemoveBorder(pd);
+      }
+      catch
+      {
+        // ignored
+      }
+      finally
+      {
+        Interlocked.Exchange(ref _isProcessingMakeBorderlessHotkey, 0);
+      }
     }
 
     #endregion

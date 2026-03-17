@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -27,6 +27,8 @@ namespace BorderlessGaming.Logic.Core
         public bool AutoHandleFavorites { get; set; }
 
         private readonly object _updateLock = new object();
+        private readonly object _pendingDelayedBorderRemovalLock = new object();
+        private readonly HashSet<IntPtr> _pendingDelayedBorderRemovals = new HashSet<IntPtr>();
 
         public ProcessWatcher(Form form)
         {
@@ -94,9 +96,11 @@ namespace BorderlessGaming.Logic.Core
         {
             if (favDetails != null && favDetails.DelayBorderless && overrideTimeout == false)
             {
-                //Wait 10 seconds before removing the border.
-                var task = new Task(async () => await RemoveBorder(pd, favDetails, true));
-                task.Wait(TimeSpan.FromSeconds(10));
+                var delayedWindowHandle = pd?.WindowHandle ?? IntPtr.Zero;
+                if (QueueDelayedBorderless(delayedWindowHandle, async () => await RemoveBorder(pd, favDetails, true)))
+                {
+                    return;
+                }
             }
 
             // If a Favorite screen exists, use the Rect from that, instead
@@ -117,9 +121,11 @@ namespace BorderlessGaming.Logic.Core
         {
             if (favDetails != null && favDetails.DelayBorderless && overrideTimeout == false)
             {
-                //Wait 10 seconds before removing the border.
-                var task = new Task(async () => await RemoveBorder_ToSpecificScreen(hWnd, screen, favDetails, true));
-                task.Wait(TimeSpan.FromSeconds(10));
+                if (QueueDelayedBorderless(hWnd,
+                        async () => await RemoveBorder_ToSpecificScreen(hWnd, screen, favDetails, true)))
+                {
+                    return;
+                }
             }
 
             var pd = FromHandle(hWnd);
@@ -134,12 +140,54 @@ namespace BorderlessGaming.Logic.Core
         {
             if (favDetails != null && favDetails.DelayBorderless && overrideTimeout == false)
             {
-                //Wait 10 seconds before removing the border.
-                var task = new Task(async () => await RemoveBorder_ToSpecificRect(hWnd, targetFrame, favDetails, true));
-                task.Wait(TimeSpan.FromSeconds(10));
+                if (QueueDelayedBorderless(hWnd,
+                        async () => await RemoveBorder_ToSpecificRect(hWnd, targetFrame, favDetails, true)))
+                {
+                    return;
+                }
             }
             var pd = FromHandle(hWnd);
             await Manipulation.MakeWindowBorderless(pd, _form, hWnd, targetFrame, favDetails ?? Favorite.FromWindow(pd));
+        }
+
+        private bool QueueDelayedBorderless(IntPtr windowHandle, Func<Task> delayedAction)
+        {
+            if (windowHandle == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            lock (_pendingDelayedBorderRemovalLock)
+            {
+                if (_pendingDelayedBorderRemovals.Contains(windowHandle))
+                {
+                    return true;
+                }
+
+                _pendingDelayedBorderRemovals.Add(windowHandle);
+            }
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10));
+                    await delayedAction();
+                }
+                catch
+                {
+                    // ignored
+                }
+                finally
+                {
+                    lock (_pendingDelayedBorderRemovalLock)
+                    {
+                        _pendingDelayedBorderRemovals.Remove(windowHandle);
+                    }
+                }
+            });
+
+            return true;
         }
 
         /// <summary>
