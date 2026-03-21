@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -55,7 +55,11 @@ namespace BorderlessGaming.Logic.Models
 
                     if (!Native.IsWindow(_windowHandle))
                     {
-                        _windowHandle = Native.GetMainWindowForProcess(Proc).GetAwaiter().GetResult();
+                        var refreshedHandle = Proc?.MainWindowHandle ?? IntPtr.Zero;
+                        if (refreshedHandle != IntPtr.Zero)
+                        {
+                            _windowHandle = refreshedHandle;
+                        }
                     }
                 }
                 catch

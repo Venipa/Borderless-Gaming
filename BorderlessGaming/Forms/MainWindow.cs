@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -50,7 +50,7 @@ namespace BorderlessGaming.Forms
 
     private void CheckForUpdates()
     {
-      this.Invoke(new Action(() => Tools.CheckForUpdates()));
+      this.PerformSafely(() => Tools.CheckForUpdates());
     }
 
     #region Local data
