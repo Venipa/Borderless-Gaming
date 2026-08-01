@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> Use https://github.com/Venipa/Bordless, newer completely Borderless App
+
+
 # Borderless Gaming - Decluttered - Fixed App Hang
 
 A utility software like this shouldn't be paid, and shouldn't have paywalled features. It's a software that changes window styles, do we really need to paywall that and add adware popups? The answer is no!
