@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> Use https://github.com/Venipa/Bordless, newer completely Borderless App
+> Use https://github.com/Venipa/Borderless, newer completely Borderless App
 
 
 # Borderless Gaming - Decluttered - Fixed App Hang
